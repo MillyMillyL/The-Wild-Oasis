@@ -1,47 +1,50 @@
 import styled from "styled-components";
-
-const H1 = styled.h1`
-  font-size: 30px;
-  font-weight: 600;
-  color: red;
-  text-transform: capitalize;
-  background-color: yellow;
-  text-align: center;
-`;
-
-const Button = styled.button`
-  font-size: 1.4rem;
-  padding: 1rem 2rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 10px;
-  background-color: purple;
-  color: white;
-  cursor: pointer;
-  margin: 20px;
-`;
-
-const Input = styled.input`
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 0.8rem 1.2rem;
-  display: block;
-`;
+import GlobalStyles from "./styles/GlobalStyles";
+import Button from "./ui/Button";
+import Input from "./ui/Input";
+import Heading from "./ui/Heading";
+import Row from "./ui/Row";
 
 const StyledApp = styled.div`
-  background-color: skyblue;
   padding: 20px;
 `;
 
 function App() {
   return (
-    <StyledApp>
-      <H1>the wild oasis</H1>
-
-      <Button onClick={() => alert("checked in")}>Check In</Button>
-      <Button onClick={() => alert("Checked out")}>Check Out</Button>
-      <Input type="number" placeholder="Number of Guests" />
-    </StyledApp>
+    <>
+      <GlobalStyles />
+      <StyledApp>
+        <Row>
+          <Row type="horizontal">
+            <Heading as="h1">the wild oasis</Heading>
+            <div>
+              <Heading as="h2">check in and out</Heading>
+              <Button
+                variation="primary"
+                size="medium"
+                onClick={() => alert("checked in")}
+              >
+                Check In
+              </Button>
+              <Button
+                variation="secondary"
+                size="small"
+                onClick={() => alert("Checked out")}
+              >
+                Check Out
+              </Button>
+            </div>
+          </Row>
+          <Row>
+            <Heading as="h3">Form</Heading>
+            <form action="">
+              <Input type="number" placeholder="Number of Guests" />
+              <Input type="number" placeholder="Number of Guests" />
+            </form>
+          </Row>
+        </Row>
+      </StyledApp>
+    </>
   );
 }
 
