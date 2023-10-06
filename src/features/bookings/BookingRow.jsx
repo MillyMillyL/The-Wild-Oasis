@@ -6,6 +6,18 @@ import Table from "../../ui/Table";
 
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
+import Modal from "../../ui/Modal";
+import Menus from "../../ui/Menus";
+import {
+  HiArrowDownOnSquare,
+  HiEye,
+  HiPencil,
+  HiSquare2Stack,
+  HiTrash,
+} from "react-icons/hi2";
+import CreateCabinForm from "../cabins/CreateCabinForm";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useNavigate } from "react-router-dom";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -44,10 +56,11 @@ function BookingRow({
     numGuests,
     totalPrice,
     status,
-    guests: { fullName: guestName, email },
+    guests: { fullName: guestName = "", email },
     cabins: { name: cabinName },
   },
 }) {
+  const navigate = useNavigate();
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -59,7 +72,7 @@ function BookingRow({
       <Cabin>{cabinName}</Cabin>
 
       <Stacked>
-        <span>{guestName}</span>
+        <span>{guestName || ""}</span>
         <span>{email}</span>
       </Stacked>
 
@@ -76,9 +89,50 @@ function BookingRow({
         </span>
       </Stacked>
 
-      <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
+      <Tag type={statusToTagName[status]}>{status?.replace("-", " ")}</Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
+      <div>
+        <Modal>
+          <Menus.Menu>
+            <Menus.Toggle id={bookingId} />
+
+            <Menus.List id={bookingId}>
+              <Menus.Button
+                icon={<HiEye />}
+                onClick={() => navigate(`/bookings/${bookingId}`)}
+              >
+                See Detail
+              </Menus.Button>
+
+              {status === "unconfirmed" && (
+                <Menus.Button
+                  icon={<HiArrowDownOnSquare />}
+                  onClick={() => navigate(`/checkin/${bookingId}`)}
+                >
+                  Check In
+                </Menus.Button>
+              )}
+
+              <Modal.Open opens="delete">
+                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+              </Modal.Open>
+            </Menus.List>
+
+            <Modal.Window name="edit">
+              <CreateCabinForm />
+            </Modal.Window>
+
+            <Modal.Window name="delete">
+              <ConfirmDelete
+                resourceName={`Cabin ${name}`}
+                disabled={false}
+                onConfirm={() => {}}
+              />
+            </Modal.Window>
+          </Menus.Menu>
+        </Modal>
+      </div>
     </Table.Row>
   );
 }
