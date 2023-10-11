@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 
 export function useBooking() {
   const { bookingId } = useParams();
-  console.log(bookingId, "-------bookingId-----");
 
   const {
     isLoading,
@@ -15,8 +14,6 @@ export function useBooking() {
     queryFn: () => getBooking(bookingId),
     retry: false,
   });
-
-  console.log("usebooking", isLoading, booking, error);
 
   return { isLoading, error, booking };
 }

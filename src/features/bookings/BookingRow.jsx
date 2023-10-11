@@ -10,14 +10,14 @@ import Modal from "../../ui/Modal";
 import Menus from "../../ui/Menus";
 import {
   HiArrowDownOnSquare,
+  HiArrowUpOnSquare,
   HiEye,
-  HiPencil,
-  HiSquare2Stack,
   HiTrash,
 } from "react-icons/hi2";
-import CreateCabinForm from "../cabins/CreateCabinForm";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import { useNavigate } from "react-router-dom";
+import { useCheckout } from "../check-in-out/useCheckout";
+import { useDeleteBooking } from "./useDeleteBooking";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -61,6 +61,8 @@ function BookingRow({
   },
 }) {
   const navigate = useNavigate();
+  const { checkout, isCheckingOut } = useCheckout();
+  const { deleteBooking, isDeleting } = useDeleteBooking();
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -114,20 +116,28 @@ function BookingRow({
                 </Menus.Button>
               )}
 
+              {status === "checked-in" && (
+                <Menus.Button
+                  icon={<HiArrowUpOnSquare />}
+                  onClick={() => {
+                    checkout(bookingId);
+                  }}
+                  disabled={isCheckingOut}
+                >
+                  Check Out
+                </Menus.Button>
+              )}
               <Modal.Open opens="delete">
-                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                <Menus.Button icon={<HiTrash />}>Delete Booking</Menus.Button>
               </Modal.Open>
             </Menus.List>
-
-            <Modal.Window name="edit">
-              <CreateCabinForm />
-            </Modal.Window>
-
             <Modal.Window name="delete">
               <ConfirmDelete
-                resourceName={`Cabin ${name}`}
-                disabled={false}
-                onConfirm={() => {}}
+                resourceName={`booking ${bookingId}`}
+                disabled={isDeleting}
+                onConfirm={() => {
+                  deleteBooking(bookingId);
+                }}
               />
             </Modal.Window>
           </Menus.Menu>
